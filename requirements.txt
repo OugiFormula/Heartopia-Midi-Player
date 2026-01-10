@@ -1,0 +1,4 @@
+mido
+python-rtmidi
+keyboard
+tk
