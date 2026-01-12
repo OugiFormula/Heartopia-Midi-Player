@@ -1,9 +1,88 @@
-# Heartopia-Midi-Player
-a python script allowing you to play music inside of the game heartopia (pc only)
+# Heartopia MIDI Player
 
-According to the mods of the heartopia discord server, any third party software is against ToS, use this knowing there is a chance you can get banned.
-I overall think its a stupid decision considering there are tools out there that help people with disabilities enjoy such games and lets be honest tools like this one are harmless and doesn't give any in game advantage over others in any way, such tools are common in social games with similar instrument systems and many people enjoy the usage of them.
+A Python script that allows you to play music inside **Heartopia** (PC only).
 
-this script supports playing midi files and also physical midi keyboards (only the white keys, I have no experience with midi keyboards so I tried my best to make it work)
+⚠️ **Warning:** According to the Heartopia Discord mods, any third-party software is against the ToS. Use this at your own risk there’s a chance you could get banned.
 
-feel free to contribute to the code to make it better, I just threw a few days on it, worked for me decently and I just use it when playing with friends.
+Personally, I believe this tool is harmless and mainly helps players enjoy the game.. It does **not** give any in-game advantage. Tools like this are common in social games with instrument systems.
+
+---
+
+## Features
+
+* Play **MIDI files** directly in the game
+* Use a **physical MIDI keyboard** (currently only white keys supported)
+* Supports **15-key** and **22-key** layouts
+* Playlist persistence (remembers loaded MIDI files between sessions)
+* Visual keyboard display
+* Simple GUI with playback controls
+
+---
+
+## Requirements
+
+* Python **3.10+**
+* Packages (install via pip):
+
+```bash
+pip install mido python-rtmidi keyboard
+```
+
+> `python-rtmidi` is required to use a physical MIDI keyboard.
+
+---
+
+## How to Run
+
+1. Clone or download this repository:
+
+```bash
+git clone https://github.com/yourusername/Heartopia-Midi-Player.git
+cd Heartopia-Midi-Player
+```
+
+2. Install required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Run the application:
+
+```bash
+python main.py
+```
+
+4. **Using the app:**
+
+* **Load MIDI files:** Click `Load MIDI` and select `.mid` or `.midi` files.
+* **Delete:** Remove selected MIDI files from the playlist.
+* **Play Selected:** Plays the selected MIDI file.
+* **Play Playlist:** Plays all MIDI files in order.
+* **MIDI Keyboard:** Connect a MIDI keyboard and select it from the dropdown to play live.
+* **Stop:** Stops playback or live MIDI input.
+* **Layout:** Choose between 15-key or 22-key layouts to match your instrument.
+
+> The app will remember loaded MIDI files and the selected layout between sessions.
+
+---
+
+## Notes
+
+* 22-key layout adds an extra low octave to match certain pianos.
+* The app is intended for fun and personal use in **Heartopia** use responsibly.
+
+---
+
+## Contributing
+
+Feel free to contribute! I built this in a few days, so there’s plenty of room for improvement:
+
+* Improve the visual keyboard mapping
+* Add more playback options (speed, looping, etc.)
+
+---
+
+## License
+
+This project is **open-source** and free to use.
