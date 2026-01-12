@@ -10,7 +10,6 @@ def midi_to_note(midi_note: int):
     return name, octave
 
 def snap_to_scale(note_name: str):
-    """Convert sharps/flats to nearest diatonic note"""
     mapping = {
         "C#": "D",
         "D#": "E",
@@ -21,9 +20,6 @@ def snap_to_scale(note_name: str):
     return mapping.get(note_name, note_name)
 
 def parse_midi(path: str):
-    """
-    Returns a list of (delay_seconds, [ (note_name, octave), ... ])
-    """
     mid = mido.MidiFile(path)
     events = []
     current_time = 0.0
