@@ -18,7 +18,7 @@ midi_input = None
 playlist = []
 current_index = None
 midi_mode = False
-current_layout = "22"
+current_layout = "22"  # "15", "22", "piano"
 
 # Tk setup
 root = tk.Tk()
@@ -34,14 +34,30 @@ def set_status(text):
 title_frame = tk.Frame(root, bg="#1e1e1e")
 title_frame.pack(pady=(10, 2))
 
-tk.Label(title_frame, text="Heartopia MIDI Player", fg="white",
-         bg="#1e1e1e", font=("Arial", 20, "bold")).pack()
-tk.Label(title_frame, text="by yukiokoito", fg="#bbbbbb",
-         bg="#1e1e1e", font=("Arial", 10)).pack()
+tk.Label(
+    title_frame,
+    text="Heartopia MIDI Player",
+    fg="white",
+    bg="#1e1e1e",
+    font=("Arial", 20, "bold")
+).pack()
+
+tk.Label(
+    title_frame,
+    text="by yukiokoito",
+    fg="#bbbbbb",
+    bg="#1e1e1e",
+    font=("Arial", 10)
+).pack()
 
 # Playlist
-playlist_box = tk.Listbox(root, bg="#2e2e2e", fg="white",
-                          selectbackground="#555555", font=("Arial", 12))
+playlist_box = tk.Listbox(
+    root,
+    bg="#2e2e2e",
+    fg="white",
+    selectbackground="#555555",
+    font=("Arial", 12)
+)
 playlist_box.pack(fill=tk.BOTH, expand=True, padx=10, pady=(10, 5))
 
 def on_playlist_select(event):
@@ -53,12 +69,22 @@ def on_playlist_select(event):
 playlist_box.bind("<<ListboxSelect>>", on_playlist_select)
 
 # Status
-status_label = tk.Label(root, text="No files loaded", bg="#1e1e1e",
-                        fg="white", font=("Arial", 12))
+status_label = tk.Label(
+    root,
+    text="No files loaded",
+    bg="#1e1e1e",
+    fg="white",
+    font=("Arial", 12)
+)
 status_label.pack(pady=(0, 10))
 
 # Visual keyboard
-keyboard_frame = tk.LabelFrame(root, text="Visual Keyboard", bg="#1e1e1e", fg="white")
+keyboard_frame = tk.LabelFrame(
+    root,
+    text="Visual Keyboard",
+    bg="#1e1e1e",
+    fg="white"
+)
 keyboard_frame.pack(fill=tk.X, padx=10, pady=5)
 
 key_labels = {}
@@ -69,16 +95,34 @@ def build_visual_keyboard(layout):
     key_labels.clear()
 
     if layout == "22":
-        keys = ["z","x","c","v","b","n","m",
-                "a","s","d","f","g","h","j",
-                "q","w","e","r","t","y","u","i"]
-    else:
-        keys = ["a","s","d","f","g","h","j",
-                "q","w","e","r","t","y","u","i"]
+        keys = [
+            "z","x","c","v","b","n","m",
+            "a","s","d","f","g","h","j",
+            "q","w","e","r","t","y","u","i"
+        ]
+    elif layout == "15":
+        keys = [
+            "a","s","d","f","g","h","j",
+            "q","w","e","r","t","y","u","i"
+        ]
+    else: 
+        keys = [
+            "z","x","c","v","b","n","m",
+            "a","s","d","f","g","h","j",
+            "q","w","e","r","t","y","u","i"
+        ]
 
     for i, key in enumerate(keys):
-        lbl = tk.Label(keyboard_frame, text=key.upper(), width=4, height=2,
-                       bg="#2e2e2e", fg="white", relief=tk.RAISED, font=("Arial", 12))
+        lbl = tk.Label(
+            keyboard_frame,
+            text=key.upper(),
+            width=4,
+            height=2,
+            bg="#2e2e2e",
+            fg="white",
+            relief=tk.RAISED,
+            font=("Arial", 12)
+        )
         lbl.grid(row=0, column=i, padx=2, pady=2)
         key_labels[key] = lbl
 
@@ -101,12 +145,16 @@ def stop():
     highlight_keys([])
 
 def load_midi():
-    files = filedialog.askopenfilenames(filetypes=[("MIDI Files", "*.mid *.midi")])
+    files = filedialog.askopenfilenames(
+        filetypes=[("MIDI Files", "*.mid *.midi")]
+    )
     if not files:
         return
+
     for path in files:
         playlist.append({"name": os.path.basename(path), "path": path})
         playlist_box.insert(tk.END, os.path.basename(path))
+
     set_status(f"{len(playlist)} files loaded")
     save_playlist()
 
@@ -115,60 +163,73 @@ def delete_selected():
     sel = playlist_box.curselection()
     if not sel:
         return
+
     idx = sel[0]
     playlist_box.delete(idx)
     playlist.pop(idx)
+
     if playlist:
-        current_index = min(idx, len(playlist)-1)
+        current_index = min(idx, len(playlist) - 1)
         playlist_box.select_set(current_index)
     else:
         current_index = None
         set_status("No files loaded")
+
     save_playlist()
 
 def play_selected():
     global midi_mode
     stop()
     midi_mode = False
+
     if current_index is None:
         messagebox.showwarning("Play", "Select a MIDI file first")
         return
+
     try:
-        events = parse_midi(playlist[current_index]["path"])
+        events = parse_midi(playlist[current_index]["path"], layout=current_layout)
     except Exception as e:
         messagebox.showerror("MIDI Error", str(e))
         return
+
     set_status(f"Playing: {playlist[current_index]['name']}")
-    player.play(events, on_key_press=highlight_keys)
+    player.play(events)
 
 def play_playlist():
     global midi_mode
     stop()
     midi_mode = False
+
     def play_next(idx):
         if idx >= len(playlist):
             set_status("Playlist finished")
             return
+
         playlist_box.select_clear(0, tk.END)
         playlist_box.select_set(idx)
         playlist_box.activate(idx)
+
         try:
-            events = parse_midi(playlist[idx]["path"])
+            events = parse_midi(playlist[idx]["path"], layout=current_layout)
         except Exception as e:
             messagebox.showerror("MIDI Error", str(e))
-            play_next(idx+1)
+            play_next(idx + 1)
             return
+
         set_status(f"Playing: {playlist[idx]['name']}")
-        player.play(events, on_key_press=highlight_keys)
-        # approximate next
-        root.after(int(sum(d[0] for d in events)*1000)+50, lambda: play_next(idx+1))
+        player.play(events)
+
+        total_ms = int(sum(d for d, _ in events) * 1000) + 50
+        root.after(total_ms, lambda: play_next(idx + 1))
+
     play_next(current_index or 0)
 
 # MIDI keyboard
 device_frame = tk.Frame(root, bg="#1e1e1e")
 device_frame.pack(pady=5)
 
-tk.Label(device_frame, text="MIDI Device:", bg="#1e1e1e", fg="white").grid(row=0, column=0, padx=5)
+tk.Label(device_frame, text="MIDI Device:", bg="#1e1e1e", fg="white") \
+    .grid(row=0, column=0, padx=5)
 
 midi_device_var = tk.StringVar()
 device_box = ttk.Combobox(device_frame, textvariable=midi_device_var, width=45)
@@ -188,11 +249,14 @@ def start_midi_keyboard():
     global midi_input, midi_mode
     stop()
     midi_mode = True
+
     port = midi_device_var.get()
     if not port or port == "No MIDI devices":
         messagebox.showerror("MIDI", "No MIDI device available")
         return
-    midi_input = MidiInputPlayer(layout=current_layout, on_key_press=highlight_keys)
+
+    midi_input = MidiInputPlayer(note_to_key=player.note_map,
+                                 on_key_press=highlight_keys)
     midi_input.start(port)
     set_status(f"MIDI Keyboard: {port}")
 
@@ -203,20 +267,33 @@ layout_var = tk.StringVar(value="22 Keys")
 
 def apply_layout():
     global player, current_layout
-    # safe stop
-    if player:
-        stop()
-    current_layout = "22" if "22" in layout_var.get() else "15"
+
+    stop()
+
+    if "15" in layout_var.get():
+        current_layout = "15"
+    elif "22" in layout_var.get():
+        current_layout = "22"
+    else:
+        current_layout = "piano"
+
     player = KeyboardPlayer(layout=current_layout)
     build_visual_keyboard(current_layout)
     save_layout()
 
-layout_menu = ttk.Combobox(root, textvariable=layout_var,
-                           values=["15 Keys","22 Keys"], state="readonly", width=10)
+layout_menu = ttk.Combobox(
+    root,
+    textvariable=layout_var,
+    values=["15 Keys", "22 Keys", "Piano (Full)"],
+    state="readonly",
+    width=14
+)
 layout_menu.pack(pady=5)
 layout_menu.bind("<<ComboboxSelected>>", lambda e: apply_layout())
 
+# ------------------------------
 # Buttons
+# ------------------------------
 btn_frame = tk.Frame(root, bg="#1e1e1e")
 btn_frame.pack(pady=5)
 
@@ -226,23 +303,41 @@ buttons = [
     ("Play Selected", play_selected),
     ("Play Playlist", play_playlist),
     ("MIDI Keyboard", start_midi_keyboard),
-    ("Stop", stop)
+    ("Stop", stop),
 ]
 
 for i, (text, cmd) in enumerate(buttons):
-    tk.Button(btn_frame, text=text, command=cmd, bg="#333333", fg="white", width=12).grid(row=0, column=i, padx=4)
+    tk.Button(
+        btn_frame,
+        text=text,
+        command=cmd,
+        bg="#333333",
+        fg="white",
+        width=12
+    ).grid(row=0, column=i, padx=4)
 
+# ------------------------------
 # Footer
+# ------------------------------
 tk.Frame(root, bg="#444444", height=1).pack(fill=tk.X, pady=10)
 
 footer = tk.Frame(root, bg="#1e1e1e")
 footer.pack(fill=tk.X, padx=10)
 
-tk.Label(footer, text="v0.1.1", fg="#aaaaaa", bg="#1e1e1e").pack(side=tk.LEFT)
-tk.Button(footer, text="Ko-fi", command=lambda: webbrowser.open("https://ko-fi.com/yukiokoito"),
-          bg="#333333", fg="white").pack(side=tk.RIGHT)
+tk.Label(footer, text="v0.1.0", fg="#aaaaaa", bg="#1e1e1e") \
+    .pack(side=tk.LEFT)
 
-# Saving songs
+tk.Button(
+    footer,
+    text="Ko-fi",
+    command=lambda: webbrowser.open("https://ko-fi.com/"),
+    bg="#333333",
+    fg="white"
+).pack(side=tk.RIGHT)
+
+# ------------------------------
+# Persistence
+# ------------------------------
 def save_playlist():
     with open(PLAYLIST_FILE, "w") as f:
         json.dump([p["path"] for p in playlist], f)
@@ -270,12 +365,13 @@ def load_layout():
     if os.path.exists(LAYOUT_FILE):
         try:
             with open(LAYOUT_FILE, "r") as f:
-                data = json.load(f)
-                current_layout = data.get("layout", "22")
+                current_layout = json.load(f).get("layout", "22")
         except Exception:
             pass
 
+# ------------------------------
 # Init
+# ------------------------------
 load_layout()
 player = KeyboardPlayer(layout=current_layout)
 build_visual_keyboard(current_layout)
