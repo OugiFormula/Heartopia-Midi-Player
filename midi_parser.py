@@ -19,21 +19,24 @@ def snap_to_scale(note_name: str):
     }
     return mapping.get(note_name, note_name)
 
-def parse_midi(path: str):
+def parse_midi(path: str, layout: str = "22"):
     mid = mido.MidiFile(path)
     events = []
-    current_time = 0.0
-
     buffer = defaultdict(list)
+    current_time = 0.0
 
     for msg in mid:
         current_time += msg.time
-
         if msg.type == "note_on" and msg.velocity > 0:
             name, octave = midi_to_note(msg.note)
-            name = snap_to_scale(name)
+
+            # Snap notes only for limited layouts
+            if layout in ("15", "22"):
+                name = snap_to_scale(name)
+
             buffer[current_time].append((name, octave))
 
+    # Convert absolute times to delays
     last_time = 0.0
     for t in sorted(buffer.keys()):
         delay = t - last_time
