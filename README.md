@@ -7,7 +7,7 @@ A Python script that allows you to play music inside **Heartopia** (PC only).
 Personally, I believe this tool is harmless and mainly helps players enjoy the game.. It does **not** give any in-game advantage. Tools like this are common in social games with instrument systems.
 
 # Huge disclaimer (ai usage)
-because of an issue trying to make it possible to use piano semi tones took me 8 hours to find a fix to the point I even rewrote the entire code again multiple times and unfortunately none of the things I did worked, I had to use ai as last resort because I couldn't take it anymore and it fixed the issue, that means some of the code might've change/broke in certain visual aspects or changed without my knowledge like the keyboard visualizer, but I would rather have a working tool with better features than a graphical issue.
+because of an issue trying to make it possible to use piano semi tones took me 8 hours to find a fix to the point I even rewrote the entire code again multiple times and unfortunately none of the things I did worked, I had to use ai as last resort because I couldn't take it anymore and it fixed the issue, that means some of the code might've change/broke in certain visual aspects or changed without my knowledge like the keyboard visualizer, but I would rather have a working tool with better features than a graphical issue that I can fix later.
 
 ---
 
