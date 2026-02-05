@@ -330,7 +330,7 @@ tk.Label(footer, text="v0.1.0", fg="#aaaaaa", bg="#1e1e1e") \
 tk.Button(
     footer,
     text="Ko-fi",
-    command=lambda: webbrowser.open("https://ko-fi.com/"),
+    command=lambda: webbrowser.open("https://ko-fi.com/yukiokoito"),
     bg="#333333",
     fg="white"
 ).pack(side=tk.RIGHT)
